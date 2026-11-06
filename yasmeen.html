@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مغامرة كنز الفضاء 🚀💎</title>
+    <!-- Tailwind CSS للتنسيق السريع والألوان المبهجة -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- خطوط جوجل العربية المميزة -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Fredoka:wght@600&display=swap" rel="stylesheet">
+    <!-- أيقونات Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- مكتبة الاحتفالات والكونفيتي -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        * {
+            font-family: 'Cairo', sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: radial-gradient(circle at 50% 20%, #2e0854 0%, #15002b 60%, #080014 100%);
+            min-height: 100vh;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* نجوم الفضاء المتلألئة */
+        .stars-container {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 80px 120px, #ffd700, rgba(0,0,0,0)),
+                radial-gradient(1.5px 1.5px at 150px 200px, #38bdf8, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 300px 80px, #ff70a6, rgba(0,0,0,0));
+            background-size: 350px 350px;
+            opacity: 0.7;
+        }
+
+        /* أنماط البطاقات ثلاثية الأبعاد للذاكرة */
+        .flip-card {
+            perspective: 1000px;
+        }
+        .flip-card-inner {
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-front, .flip-back {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .flip-back {
+            transform: rotateY(180deg);
+        }
+
+        /* نبض وتوهج أزرار الأبطال */
+        @keyframes heroGlow {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 15px rgba(245, 158, 11, 0.6)); }
+            50% { transform: scale(1.03); filter: drop-shadow(0 0 25px rgba(236, 72, 153, 0.9)); }
+        }
+        .hero-pulse {
+            animation: heroGlow 2.5s infinite ease-in-out;
+        }
+
+        /* حركة الشهب الساقطة في اللعبة الأولى */
+        @keyframes fallMeteor {
+            0% { transform: translateY(-70px) scale(0.9); opacity: 0; }
+            10% { opacity: 1; }
+            95% { opacity: 1; }
+            100% { transform: translateY(340px) scale(1.05); opacity: 0.1; }
+        }
+        .meteor-falling {
+            animation: fallMeteor 8s linear infinite;
+        }
+    </style>
+</head>
+<body class="flex flex-col justify-between min-h-screen p-3 sm:p-6 relative">
+
+    <div class="stars-container"></div>
+
+    <!-- شريط معلومات المغامرة والنتائج -->
+    <header class="max-w-4xl mx-auto w-full bg-slate-900/80 backdrop-blur-xl rounded-3xl p-4 border-2 border-fuchsia-500/40 shadow-[0_0_30px_rgba(192,38,211,0.25)] flex flex-wrap items-center justify-between gap-4 z-10">
+        <!-- هوية اللعبة والتميمة -->
+        <div class="flex items-center gap-3">
+            <div class="w-13 h-13 bg-gradient-to-tr from-amber-400 via-pink-500 to-indigo-600 rounded-2xl p-0.5 shadow-lg flex items-center justify-center transform -rotate-3 hover:rotate-0 transition">
+                <div class="w-12 h-12 bg-slate-900 rounded-[14px] flex items-center justify-center text-amber-400 text-2xl">
+                    🚀
+                </div>
+            </div>
+            <div>
+                <h1 class="text-xl sm:text-2xl font-black bg-gradient-to-r from-amber-300 via-pink-300 to-cyan-300 bg-clip-text text-transparent">
+                    مغامرة كنز الفضاء
+                </h1>
+                <p class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    محطة الأبطال الأذكياء
+                </p>
+            </div>
+        </div>
+
+        <!-- النقاط وسلسلة الانتصارات وكاتم الصوت -->
+        <div class="flex items-center gap-4 bg-slate-800/80 border border-slate-700/80 px-5 py-2.5 rounded-2xl shadow-inner">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-gem text-cyan-400 text-xl animate-bounce"></i>
+                <span class="font-black text-xl text-yellow-300" id="totalScore">0</span>
+                <span class="text-xs text-slate-300 font-bold">جوهرة</span>
+            </div>
+            <div class="h-6 w-0.5 bg-slate-700"></div>
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-fire-flame-curved text-orange-500 text-lg"></i>
+                <span class="font-bold text-sm text-orange-300" id="streakDisplay">0x كومبو</span>
+            </div>
+            <div class="h-6 w-0.5 bg-slate-700"></div>
+            <button onclick="audioFx.toggleMute()" id="muteBtn" class="text-slate-300 hover:text-white transition text-lg" title="كتم/تشغيل الصوت">
+                <i class="fa-solid fa-volume-high"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- منطقة اللعب الرئيسية التفاعلية -->
+    <main class="max-w-4xl mx-auto w-full my-6 z-10 flex-grow flex items-center justify-center">
+
+        <!-- 1. شاشة الميناء الفضائي واختيار المهمة (Lobby) -->
+        <section id="screen-hub" class="w-full bg-slate-900/90 backdrop-blur-2xl rounded-3xl p-6 sm:p-8 border-2 border-indigo-500/40 shadow-2xl text-center">
+            <div class="inline-block bg-gradient-to-r from-pink-500/20 to-purple-500/20 border border-pink-500/40 text-pink-300 text-xs sm:text-sm font-extrabold px-5 py-2 rounded-full mb-3">
+                ✨ اختر مرحلتك واستعد لاكتساب الأوسمة!
+            </div>
+            <h2 class="text-2xl sm:text-4xl font-black text-white mb-3">
+                خريطة تحديات الأبطال 🗺️
+            </h2>
+            <p class="text-slate-300 text-sm max-w-lg mx-auto mb-8">
+                اختر نوع اللعبة المفضلة لديك، أجب بطريقة ابتكارية تفاعلية واجمع أضخم عدد من الجواهر والنجوم!
+            </p>
+
+            <!-- بطاقات الألعاب الثلاثة المبتكرة -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-right">
+
+                <!-- اللعبة الأولى: مدفع الشهب -->
+                <div class="bg-gradient-to-b from-slate-800 to-indigo-950/80 border-2 border-cyan-400/30 rounded-3xl p-6 hover:border-cyan-400 transition hover:-translate-y-2 group shadow-xl flex flex-col justify-between">
+                    <div>
+                        <div class="w-16 h-16 rounded-2xl bg-cyan-500/20 text-cyan-300 flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition">
+                            ☄️
+                        </div>
+                        <h3 class="font-black text-xl text-white mb-2">مدفع الشهب الساقطة</h3>
+                        <p class="text-slate-400 text-xs leading-relaxed mb-4">
+                            شهب فضائية تحمل إجابات تهبط بسرعة! وجّه مدفع ليزر السفينة وفجّر الشهاب الصحيح قبل أن يصطدم بالأرض!
+                        </p>
+                    </div>
+                    <button onclick="startMeteorGame()" class="w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+                        <span>انطلق للتحدي</span>
+                        <i class="fa-solid fa-crosshairs"></i>
+                    </button>
+                </div>
+
+                <!-- اللعبة الثانية: بطاقات الذاكرة السحرية -->
+                <div class="bg-gradient-to-b from-slate-800 to-purple-950/80 border-2 border-pink-400/30 rounded-3xl p-6 hover:border-pink-400 transition hover:-translate-y-2 group shadow-xl flex flex-col justify-between">
+                    <div>
+                        <div class="w-16 h-16 rounded-2xl bg-pink-500/20 text-pink-300 flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition">
+                            🃏
+                        </div>
+                        <h3 class="font-black text-xl text-white mb-2">بطاقات الذاكرة السحرية</h3>
+                        <p class="text-slate-400 text-xs leading-relaxed mb-4">
+                            اقلب البطاقات الغامضة واكتشف كل مصطلح وما يطابقه من مفاهيم ذكية، واكسب نقاط مضاعفة مع كل زوج صحيح متتالي.
+                        </p>
+                    </div>
+                    <button onclick="startMemoryGame()" class="w-full py-3 bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-400 hover:to-rose-500 text-white font-black rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+                        <span>اقلب البطاقات</span>
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </button>
+                </div>
+
+                <!-- اللعبة الثالثة: فك شفرة الخزنة -->
+                <div class="bg-gradient-to-b from-slate-800 to-amber-950/80 border-2 border-amber-400/30 rounded-3xl p-6 hover:border-amber-400 transition hover:-translate-y-2 group shadow-xl flex flex-col justify-between">
+                    <div>
+                        <div class="w-16 h-16 rounded-2xl bg-amber-500/20 text-amber-300 flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition">
+                            🔐
+                        </div>
+                        <h3 class="font-black text-xl text-white mb-2">كسر شفرة الخزانة</h3>
+                        <p class="text-slate-400 text-xs leading-relaxed mb-4">
+                            اقرأ لغز الخزنة الغامض، ثم قم بتدوير بكرات التروس الرقمية حتى تصل إلى الكلمة السرية الصحيحة وتفتح الكنز!
+                        </p>
+                    </div>
+                    <button onclick="startSafeGame()" class="w-full py-3 bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-slate-950 font-black rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+                        <span>افتح الخزنة</span>
+                        <i class="fa-solid fa-key"></i>
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 2. ساحة اللعبة الأولى: مدفع الشهب الفضائية (Meteor Cannon) -->
+        <section id="screen-meteor" class="hidden w-full bg-slate-900/90 backdrop-blur-2xl rounded-3xl p-6 sm:p-8 border-2 border-cyan-500/40 shadow-2xl relative overflow-hidden">
+            <div class="flex justify-between items-center mb-4">
+                <button onclick="returnToHub()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-4 py-2 rounded-xl transition flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-right"></i>
+                    <span>العودة للمحطة</span>
+                </button>
+                <div class="bg-cyan-950/80 border border-cyan-400/50 px-4 py-1.5 rounded-full text-xs font-black text-cyan-300">
+                    ☄️ استهدف الشهاب الصحيح!
+                </div>
+            </div>
+
+            <!-- السؤال الفضائي -->
+            <div class="bg-slate-800/90 border border-slate-700 p-5 rounded-2xl text-center shadow-lg my-4">
+                <span class="text-xs font-bold text-cyan-400 block mb-1">المهمة الحالية:</span>
+                <h3 id="meteorQuestionText" class="text-xl sm:text-2xl font-black text-yellow-300">
+                    السؤال الفضائي يظهر هنا...
+                </h3>
+            </div>
+
+            <!-- منطقة سقوط الشهب الفضائية -->
+            <div id="meteorField" class="relative w-full h-[360px] bg-slate-950/70 border-2 border-dashed border-cyan-500/30 rounded-3xl overflow-hidden my-4 flex items-start justify-around p-4">
+                <!-- يتم توليد الشهب الثلاثة هبوطياً عبر الكود -->
+            </div>
+
+            <!-- سفينة الدفاع ومدفع الليزر السفلي -->
+            <div class="text-center pt-2 flex flex-col items-center">
+                <div id="spaceshipBlaster" class="text-4xl sm:text-5xl transition-transform duration-300 drop-shadow-[0_0_15px_rgba(56,189,248,0.8)]">
+                    🚀
+                </div>
+                <p class="text-xs text-slate-400 mt-2 font-bold">
+                    انقر مباشرة على الشهاب الذي يحمل الإجابة الصحيحة لإطلاق الليزر وتفجيره! 🎯
+                </p>
+            </div>
+        </section>
+
+        <!-- 3. ساحة اللعبة الثانية: بطاقات الذاكرة السحرية (Magic Cards) -->
+        <section id="screen-memory" class="hidden w-full bg-slate-900/90 backdrop-blur-2xl rounded-3xl p-6 sm:p-8 border-2 border-pink-500/40 shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <button onclick="returnToHub()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-4 py-2 rounded-xl transition flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-right"></i>
+                    <span>العودة للمحطة</span>
+                </button>
+                <div class="bg-pink-950/80 border border-pink-400/50 px-4 py-1.5 rounded-full text-xs font-black text-pink-300">
+                    🃏 طابق كل مفهوم بما يناسبه!
+                </div>
+            </div>
+
+            <div class="text-center mb-6">
+                <h3 class="text-2xl font-black text-white mb-1">تحدي الذاكرة والربط الذكي 🧠</h3>
+                <p class="text-xs text-slate-400">انقر على بطاقتين للبحث عن المفهوم المكمل له (مثل الدولة وعاصمتها، أو الكائن وغذاؤه)</p>
+            </div>
+
+            <!-- شبكة البطاقات الثلاثية الأبعاد -->
+            <div id="cardsGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-2xl mx-auto my-4">
+                <!-- يتم ملء البطاقات التفاعلية عبر الجافاسكريبت -->
+            </div>
+        </section>
+
+        <!-- 4. ساحة اللعبة الثالثة: فك شفرة الخزانة بالتروس (Safe Dial) -->
+        <section id="screen-safe" class="hidden w-full bg-slate-900/90 backdrop-blur-2xl rounded-3xl p-6 sm:p-8 border-2 border-amber-500/40 shadow-2xl text-center">
+            <div class="flex justify-between items-center mb-6">
+                <button onclick="returnToHub()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-4 py-2 rounded-xl transition flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-right"></i>
+                    <span>العودة للمحطة</span>
+                </button>
+                <div class="bg-amber-950/80 border border-amber-400/50 px-4 py-1.5 rounded-full text-xs font-black text-amber-300">
+                    🔐 شفرة الخزنة الذهبية
+                </div>
+            </div>
+
+            <!-- لغز الخزنة -->
+            <div class="max-w-xl mx-auto bg-gradient-to-r from-amber-500/10 via-purple-500/10 to-indigo-500/10 border-2 border-dashed border-amber-400/40 p-6 rounded-3xl mb-6">
+                <i class="fa-solid fa-vault text-amber-400 text-4xl mb-3 animate-pulse"></i>
+                <span class="text-xs font-bold text-amber-300 block mb-1">اللغز السري للخزنة:</span>
+                <h3 id="safeRiddleText" class="text-xl sm:text-2xl font-black text-white leading-relaxed">
+                    جاري تحميل اللغز السري...
+                </h3>
+            </div>
+
+            <!-- بكرات التروس الدوارة للاختيار -->
+            <div class="max-w-md mx-auto my-6 bg-slate-950/80 border-2 border-amber-400/50 rounded-3xl p-6 shadow-[inset_0_0_20px_rgba(245,158,11,0.2)]">
+                <span class="text-xs font-bold text-slate-400 block mb-3">حرّك الترس لاختيار الشفرة المطابقة:</span>
+                <div class="flex items-center justify-center gap-4">
+                    <button onclick="rotateDial(-1)" class="w-12 h-12 bg-amber-500/20 hover:bg-amber-500/40 border border-amber-400/60 rounded-2xl flex items-center justify-center text-amber-300 text-xl transition active:scale-90">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                    
+                    <div id="dialCurrentValue" class="flex-1 py-4 px-3 bg-gradient-to-r from-amber-500/30 to-orange-500/30 border-2 border-amber-400 rounded-2xl font-black text-xl sm:text-2xl text-amber-200 tracking-wider shadow-lg">
+                        ---
+                    </div>
+
+                    <button onclick="rotateDial(1)" class="w-12 h-12 bg-amber-500/20 hover:bg-amber-500/40 border border-amber-400/60 rounded-2xl flex items-center justify-center text-amber-300 text-xl transition active:scale-90">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                </div>
+            </div>
+
+            <button onclick="unlockSafeAttempt()" class="hero-pulse py-4 px-10 bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500 text-slate-950 font-black text-lg rounded-2xl shadow-xl transition active:scale-95 inline-flex items-center gap-3">
+                <i class="fa-solid fa-unlock-keyhole text-xl"></i>
+                <span>تطبيق الشفرة وفتح الخزنة</span>
+            </button>
+        </section>
+
+        <!-- 5. شاشة الاحتفال الكبرى بالنصر (Victory Screen) -->
+        <section id="screen-victory" class="hidden w-full max-w-lg bg-slate-900/95 backdrop-blur-2xl rounded-3xl p-8 border-4 border-amber-400 shadow-[0_0_50px_rgba(245,158,11,0.4)] text-center">
+            <div class="w-24 h-24 bg-gradient-to-tr from-amber-400 to-yellow-200 text-slate-950 rounded-full flex items-center justify-center mx-auto text-5xl mb-4 shadow-xl animate-bounce">
+                👑
+            </div>
+            <h2 class="text-3xl font-black text-white mb-2">أسطورة المعرفة الخارقة! 🏆</h2>
+            <p class="text-slate-300 text-sm mb-6">لقد تجاوزت التحديات وحصلت على وسام الشرف الفضائي!</p>
+
+            <div class="bg-slate-800/80 border border-slate-700 p-6 rounded-2xl mb-6 flex justify-around items-center">
+                <div>
+                    <span class="block text-xs font-bold text-slate-400">إجمالي الجواهر</span>
+                    <span class="text-3xl font-black text-cyan-400" id="finalScoreVal">0</span>
+                </div>
+                <div class="h-10 w-0.5 bg-slate-700"></div>
+                <div>
+                    <span class="block text-xs font-bold text-slate-400">الرتبة المكتسبة</span>
+                    <span class="text-xl font-black text-amber-300">قائد أساطيل النجوم 🌟</span>
+                </div>
+            </div>
+
+            <button onclick="returnToHub()" class="w-full py-4 bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 hover:opacity-95 text-white font-black rounded-2xl shadow-xl transition active:scale-95">
+                العودة لخريطة الألعاب 🚀
+            </button>
+        </section>
+
+    </main>
+
+    <!-- تذييل الصفحة -->
+    <footer class="max-w-4xl mx-auto w-full text-center text-slate-400 text-xs font-bold py-2 z-10">
+        مغامرة تعليمية تفاعلية للكتب الإلكترونية والمنصات الذكية 🌟
+    </footer>
+
+    <!-- نافذة رد الفعل المنبثقة التفاعلية (Feedback Modal) -->
+    <div id="feedbackModal" class="fixed inset-0 bg-black/75 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div id="feedbackCard" class="bg-slate-900 border-4 border-cyan-400 rounded-3xl p-6 sm:p-8 max-w-sm w-full text-center shadow-2xl transform transition">
+            <div id="feedbackIcon" class="w-20 h-20 rounded-full mx-auto flex items-center justify-center text-4xl mb-4 shadow-lg"></div>
+            <h3 id="feedbackTitle" class="text-2xl font-black text-white mb-2"></h3>
+            <p id="feedbackText" class="text-slate-300 text-sm mb-6 leading-relaxed"></p>
+            <button id="feedbackBtn" class="w-full py-3.5 rounded-xl font-black text-white shadow-lg transition active:scale-95">
+                متابعة المغامرة 🚀
+            </button>
+        </div>
+    </div>
+
+    <!-- كود المحركات البرمجية: الصوت، الألعاب، وحفظ التقدم -->
+    <script>
+        /* ========================================================
+           1. بنك الأسئلة والبيانات التعليمية (يمكن تعديلها بسهولة من هنا)
+           ======================================================== */
+        
+        // أسئلة مدفع الشهب الفضائية (سؤال + شهاب صحيح وشهب خاطئة)
+        const meteorQuestions = [
+            {
+                q: "ما هو الكوكب الأقرب إلى الشمس في نظامنا الشمسي؟",
+                options: [
+                    { text: "عطارد ☀️", correct: true },
+                    { text: "الأرض 🌍", correct: false },
+                    { text: "المريخ 🔴", correct: false }
+                ],
+                info: "عطارد هو أقرب كوكب للشمس ويتميز بتفاوت درجات حرارته الكبيرة!"
+            },
+            {
+                q: "ما هي عاصمة جمهورية مصر العربية؟",
+                options: [
+                    { text: "القاهرة 🏛️", correct: true },
+                    { text: "الإسكندرية 🌊", correct: false },
+                    { text: "الأقصر 🏺", correct: false }
+                ],
+                info: "القاهرة هي مدينة الألف مئذنة وعاصمة مصر العريقة!"
+            },
+            {
+                q: "أي الغازات التالية تحتاجه النباتات لصنع غذائها؟",
+                options: [
+                    { text: "ثاني أكسيد الكربون 🌿", correct: true },
+                    { text: "الأكسجين 💨", correct: false },
+                    { text: "الهيليوم 🎈", correct: false }
+                ],
+                info: "تمتص النباتات غاز ثاني أكسيد الكربون وتطلق لنا غاز الأكسجين النقي!"
+            }
+        ];
+
+        // بطاقات الذاكرة السحرية (الأزواج المتطابقة)
+        const memoryPairs = [
+            { id: 1, text: "ملك الغابة 🦁", matchKey: 'lion' },
+            { id: 1, text: "الأسد 🐾", matchKey: 'lion' },
+            { id: 2, text: "الكوكب الأحمر 🪐", matchKey: 'mars' },
+            { id: 2, text: "المريخ 🔴", matchKey: 'mars' },
+            { id: 3, text: "أكبر محيط بالعالم 🌊", matchKey: 'pacific' },
+            { id: 3, text: "المحيط الهادئ 🚢", matchKey: 'pacific' },
+            { id: 4, text: "مصدر الضوء للأرض ☀️", matchKey: 'sun' },
+            { id: 4, text: "الشمس 🌟", matchKey: 'sun' }
+        ];
+
+        // ألغاز الخزانة والتروس الفضائية
+        const safeRiddles = [
+            {
+                riddle: "أنا القوة الخفية التي تجعل التفاحة تسقط على الأرض وتثبت أقدامنا، فمن أكون؟",
+                correctAnswer: "الجاذبية الأرضية 🍎",
+                choices: ["الجاذبية الأرضية 🍎", "الرياح القوية 💨", "المغناطيس العملاق 🧲", "الضوء السريع ⚡"]
+            },
+            {
+                riddle: "أكبر الكائنات الحية حجماً على كوكب الأرض ويسبح في أعماق المحيطات؟",
+                correctAnswer: "الحوت الأزرق 🐋",
+                choices: ["الحوت الأزرق 🐋", "الفيل الإفريقي 🐘", "القرش الأبيض 🦈", "الديناصور المنقرض 🦕"]
+            }
+        ];
+
+        /* ========================================================
+           2. محرك الصوت المطور (Web Audio API بدون أي ملفات خارجية)
+           ======================================================== */
+        class RetroAudioEngine {
+            constructor() {
+                this.ctx = null;
+                this.isMuted = false;
+            }
+
+            init() {
+                if (!this.ctx) {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    this.ctx = new AudioCtx();
+                }
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            }
+
+            toggleMute() {
+                this.isMuted = !this.isMuted;
+                const btn = document.getElementById('muteBtn');
+                btn.innerHTML = this.isMuted ? 
+                    '<i class="fa-solid fa-volume-xmark text-rose-500"></i>' : 
+                    '<i class="fa-solid fa-volume-high"></i>';
+            }
+
+            // صوت إطلاق مدفع الليزر
+            laserShoot() {
+                if (this.isMuted) return;
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(880, now);
+                osc.frequency.exponentialRampToValueAtTime(110, now + 0.2);
+
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.2);
+            }
+
+            // صوت انفجار الشهاب / نصر صحيح
+            explosion() {
+                if (this.isMuted) return;
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.exponentialRampToValueAtTime(40, now + 0.35);
+
+                gain.gain.setValueAtTime(0.4, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.35);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.35);
+            }
+
+            // نغمة فوز مبهجة متعددة النغمات
+            chimeSuccess() {
+                if (this.isMuted) return;
+                this.init();
+                const notes = [523.25, 659.25, 783.99, 1046.50]; // C, E, G, High C
+                notes.forEach((freq, idx) => {
+                    const now = this.ctx.currentTime + (idx * 0.08);
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now);
+
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.25);
+                });
+            }
+
+            // صوت قلب بطاقة خفيفة
+            cardFlip() {
+                if (this.isMuted) return;
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.exponentialRampToValueAtTime(700, now + 0.08);
+
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.08);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.08);
+            }
+
+            // نقرة دوران ترس الخزانة
+            dialTick() {
+                if (this.isMuted) return;
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(900, now);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.04);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.04);
+            }
+
+            // صوت إجابة خاطئة
+            buzzFail() {
+                if (this.isMuted) return;
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(180, now);
+                osc.frequency.linearRampToValueAtTime(110, now + 0.25);
+
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.25);
+            }
+        }
+
+        const audioFx = new RetroAudioEngine();
+
+        /* ========================================================
+           3. إدارة الحالة والنقاط العامة (Global State)
+           ======================================================== */
+        let totalScore = 0;
+        let comboStreak = 0;
+
+        function addScore(points) {
+            comboStreak++;
+            const bonus = comboStreak > 1 ? comboStreak * 10 : 0;
+            totalScore += points + bonus;
+            
+            document.getElementById('totalScore').textContent = totalScore;
+            document.getElementById('streakDisplay').textContent = `${comboStreak}x كومبو 🔥`;
+        }
+
+        function resetStreak() {
+            comboStreak = 0;
+            document.getElementById('streakDisplay').textContent = `0x كومبو`;
+        }
+
+        function showScreen(screenId) {
+            ['screen-hub', 'screen-meteor', 'screen-memory', 'screen-safe', 'screen-victory'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+            document.getElementById(screenId).classList.remove('hidden');
+        }
+
+        function returnToHub() {
+            showScreen('screen-hub');
+        }
+
+        /* نافذة التغذية الراجعة التفاعلية */
+        function openFeedback(isSuccess, title, msg, nextAction) {
+            const modal = document.getElementById('feedbackModal');
+            const card = document.getElementById('feedbackCard');
+            const icon = document.getElementById('feedbackIcon');
+            const titleEl = document.getElementById('feedbackTitle');
+            const textEl = document.getElementById('feedbackText');
+            const btn = document.getElementById('feedbackBtn');
+
+            if (isSuccess) {
+                card.className = "bg-slate-900 border-4 border-emerald-400 rounded-3xl p-6 sm:p-8 max-w-sm w-full text-center shadow-2xl";
+                icon.className = "w-20 h-20 rounded-full mx-auto flex items-center justify-center text-4xl mb-4 bg-emerald-500/20 text-emerald-400 border border-emerald-400/50 shadow-lg";
+                icon.innerHTML = '<i class="fa-solid fa-bolt"></i>';
+                btn.className = "w-full py-3.5 rounded-xl font-black text-slate-950 bg-gradient-to-r from-emerald-400 to-teal-400 hover:opacity-95 shadow-lg";
+                btn.textContent = "تابع المهمة يا بطل 🚀";
+            } else {
+                card.className = "bg-slate-900 border-4 border-rose-500 rounded-3xl p-6 sm:p-8 max-w-sm w-full text-center shadow-2xl";
+                icon.className = "w-20 h-20 rounded-full mx-auto flex items-center justify-center text-4xl mb-4 bg-rose-500/20 text-rose-400 border border-rose-400/50 shadow-lg";
+                icon.innerHTML = '<i class="fa-solid fa-shield-halved"></i>';
+                btn.className = "w-full py-3.5 rounded-xl font-black text-white bg-gradient-to-r from-rose-500 to-red-600 hover:opacity-95 shadow-lg";
+                btn.textContent = "أعد المحاولة والتركيز 🛡️";
+            }
+
+            titleEl.textContent = title;
+            textEl.textContent = msg;
+
+            btn.onclick = () => {
+                modal.classList.add('hidden');
+                if (nextAction) nextAction();
+            };
+
+            modal.classList.remove('hidden');
+        }
+
+        /* ========================================================
+           4. محرك اللعبة الأولى: مدفع الليزر والشهب الساقطة
+           ======================================================== */
+        let currentMeteorIndex = 0;
+
+        function startMeteorGame() {
+            showScreen('screen-meteor');
+            renderMeteorQuestion();
+        }
+
+        function renderMeteorQuestion() {
+            const data = meteorQuestions[currentMeteorIndex % meteorQuestions.length];
+            document.getElementById('meteorQuestionText').textContent = data.q;
+            const field = document.getElementById('meteorField');
+            field.innerHTML = '';
+
+            // ألوان وتأثيرات الشهب الفضائية
+            const meteorGradients = [
+                'from-rose-500 to-amber-500 border-amber-300',
+                'from-cyan-500 to-blue-600 border-cyan-300',
+                'from-purple-500 to-pink-600 border-pink-300'
+            ];
+
+            data.options.forEach((opt, idx) => {
+                const meteor = document.createElement('div');
+                meteor.className = `meteor-falling cursor-pointer bg-gradient-to-br ${meteorGradients[idx]} border-2 text-white font-black text-sm sm:text-base px-4 py-3 rounded-2xl shadow-[0_0_20px_rgba(255,255,255,0.3)] flex items-center gap-2 transform active:scale-90 transition`;
+                meteor.style.animationDelay = `${idx * 0.8}s`;
+                meteor.style.animationDuration = `6.5s`;
+                meteor.innerHTML = `<span>☄️</span> <span>${opt.text}</span>`;
+
+                meteor.onclick = () => {
+                    audioFx.laserShoot();
+                    
+                    // توجيه سفينة الفضاء نحو مكان الشهاب
+                    const blaster = document.getElementById('spaceshipBlaster');
+                    const rotation = (idx === 0) ? '-20deg' : (idx === 1 ? '0deg' : '20deg');
+                    blaster.style.transform = `rotate(${rotation}) scale(1.15)`;
+                    setTimeout(() => blaster.style.transform = 'rotate(0deg) scale(1)', 400);
+
+                    if (opt.correct) {
+                        audioFx.explosion();
+                        audioFx.chimeSuccess();
+                        confetti({ particleCount: 70, spread: 60 });
+                        addScore(150);
+
+                        openFeedback(true, "إصابة دقيقة وتفجير ناجح! 🎯", data.info, () => {
+                            currentMeteorIndex++;
+                            if (currentMeteorIndex >= meteorQuestions.length) {
+                                triggerVictory();
+                            } else {
+                                renderMeteorQuestion();
+                            }
+                        });
+                    } else {
+                        audioFx.buzzFail();
+                        resetStreak();
+                        openFeedback(false, "انتبه يا بطل! ⚠️", "هذا الشهاب يحمل إجابة غير دقيقة، حاول حماية محطتك مرة أخرى!", null);
+                    }
+                };
+
+                field.appendChild(meteor);
+            });
+        }
+
+        /* ========================================================
+           5. محرك اللعبة الثانية: بطاقات الذاكرة السحرية (Memory Cards)
+           ======================================================== */
+        let memoryCardsList = [];
+        let flippedCards = [];
+        let matchedPairsCount = 0;
+
+        function startMemoryGame() {
+            showScreen('screen-memory');
+            matchedPairsCount = 0;
+            flippedCards = [];
+            
+            // خلط البطاقات عشوائياً
+            memoryCardsList = [...memoryPairs].sort(() => Math.random() - 0.5);
+
+            const grid = document.getElementById('cardsGrid');
+            grid.innerHTML = '';
+
+            memoryCardsList.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = "flip-card h-28 sm:h-32 cursor-pointer";
+                card.dataset.index = index;
+                card.dataset.key = item.matchKey;
+
+                card.innerHTML = `
+                    <div class="flip-card-inner w-full h-full relative rounded-2xl shadow-lg">
+                        <!-- الوجه المغلق (خلفية كنز الفضاء) -->
+                        <div class="flip-front absolute inset-0 bg-gradient-to-br from-indigo-900 to-purple-950 border-2 border-indigo-400/50 rounded-2xl flex flex-col items-center justify-center text-amber-300 text-3xl font-black shadow-inner">
+                            <span>✨</span>
+                            <span class="text-[10px] text-slate-300 mt-1 font-bold">المغامر</span>
+                        </div>
+                        <!-- الوجه المفتوح (المفهوم العلمي) -->
+                        <div class="flip-back absolute inset-0 bg-gradient-to-br from-pink-600 to-rose-700 border-2 border-amber-300 rounded-2xl flex items-center justify-center p-3 text-center text-white font-bold text-sm sm:text-base shadow-xl">
+                            ${item.text}
+                        </div>
+                    </div>
+                `;
+
+                card.onclick = () => handleCardClick(card);
+                grid.appendChild(card);
+            });
+        }
+
+        function handleCardClick(card) {
+            // منع النقر إذا كانت البطاقة مقلوبة أصلاً أو تم اختيار بطاقتين
+            if (card.classList.contains('flipped') || flippedCards.length >= 2) return;
+
+            audioFx.cardFlip();
+            card.classList.add('flipped');
+            flippedCards.push(card);
+
+            if (flippedCards.length === 2) {
+                const [card1, card2] = flippedCards;
+                if (card1.dataset.key === card2.dataset.key) {
+                    // تطابق صحيح
+                    setTimeout(() => {
+                        audioFx.chimeSuccess();
+                        card1.querySelector('.flip-back').classList.add('ring-4', 'ring-emerald-400');
+                        card2.querySelector('.flip-back').classList.add('ring-4', 'ring-emerald-400');
+                        confetti({ particleCount: 50, spread: 50 });
+                        addScore(100);
+                        matchedPairsCount++;
+                        flippedCards = [];
+
+                        if (matchedPairsCount >= memoryPairs.length / 2) {
+                            setTimeout(() => {
+                                triggerVictory();
+                            }, 800);
+                        }
+                    }, 400);
+                } else {
+                    // غير متطابقتين -> إعادة قلبهما
+                    setTimeout(() => {
+                        audioFx.buzzFail();
+                        card1.classList.remove('flipped');
+                        card2.classList.remove('flipped');
+                        flippedCards = [];
+                        resetStreak();
+                    }, 1100);
+                }
+            }
+        }
+
+        /* ========================================================
+           6. محرك اللعبة الثالثة: فك شفرة الخزنة بالتروس الرقمية
+           ======================================================== */
+        let currentSafeIndex = 0;
+        let dialSelectionIndex = 0;
+
+        function startSafeGame() {
+            showScreen('screen-safe');
+            dialSelectionIndex = 0;
+            renderSafeRiddle();
+        }
+
+        function renderSafeRiddle() {
+            const currentRiddle = safeRiddles[currentSafeIndex % safeRiddles.length];
+            document.getElementById('safeRiddleText').textContent = currentRiddle.riddle;
+            updateDialDisplay();
+        }
+
+        function rotateDial(direction) {
+            audioFx.dialTick();
+            const currentRiddle = safeRiddles[currentSafeIndex % safeRiddles.length];
+            dialSelectionIndex = (dialSelectionIndex + direction + currentRiddle.choices.length) % currentRiddle.choices.length;
+            updateDialDisplay();
+        }
+
+        function updateDialDisplay() {
+            const currentRiddle = safeRiddles[currentSafeIndex % safeRiddles.length];
+            const dialEl = document.getElementById('dialCurrentValue');
+            dialEl.textContent = currentRiddle.choices[dialSelectionIndex];
+        }
+
+        function unlockSafeAttempt() {
+            const currentRiddle = safeRiddles[currentSafeIndex % safeRiddles.length];
+            const chosen = currentRiddle.choices[dialSelectionIndex];
+
+            if (chosen === currentRiddle.correctAnswer) {
+                audioFx.chimeSuccess();
+                confetti({ particleCount: 90, spread: 70 });
+                addScore(200);
+
+                openFeedback(true, "انفتحت الخزنة الذهبية! 🔓💎", "شفرة عبقرية وتحليل منطقي رائع يا بطل!", () => {
+                    currentSafeIndex++;
+                    if (currentSafeIndex >= safeRiddles.length) {
+                        triggerVictory();
+                    } else {
+                        dialSelectionIndex = 0;
+                        renderSafeRiddle();
+                    }
+                });
+            } else {
+                audioFx.buzzFail();
+                resetStreak();
+                openFeedback(false, "القفل لم يفتح بعد! 🔒", "الشفرة المختارة غير متطابقة مع اللغز، أدر الترس وجرب خياراً آخر!", null);
+            }
+        }
+
+        /* ========================================================
+           7. شاشة التتويج والانتصار الكبرى
+           ======================================================== */
+        function triggerVictory() {
+            showScreen('screen-victory');
+            audioFx.chimeSuccess();
+
+            // إطلاق شلال كونفيتي احتفالي فخم
+            const end = Date.now() + 2500;
+            (function frame() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 60,
+                    origin: { x: 0 }
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 60,
+                    origin: { x: 1 }
+                });
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+
+            document.getElementById('finalScoreVal').textContent = totalScore;
+        }
+    </script>
+</body>
+</html>
